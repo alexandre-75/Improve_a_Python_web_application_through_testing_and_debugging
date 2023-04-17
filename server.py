@@ -99,6 +99,17 @@ def purchasePlaces():
         return render_template('welcome.html', club=club, competitions=competitions)
 
 
+def booked_places(args_compétitions, args_clubs):
+    places = []
+    for comp in args_compétitions:
+        for club in args_clubs:
+            places.append({'competition': comp['name'], 'booked': [0, club['name']]})
+
+    return places
+
+places_booked = booked_places(competitions, clubs)
+print(places_booked)
+
 # TODO: Add route for points display
 
 
