@@ -45,6 +45,15 @@ def book(competition,club):
 @app.route('/purchasePlaces', methods=['POST'])
 def purchasePlaces():
     
+    """purchase of competition places by a club.
+    Retrieves the selected competition and club,
+    from the `competitions` and `clubs` lists based on the form data submitted by the user.
+    If the number of places required exceeds the number of points the club has,
+    a message is added to the user session and the home page is displayed.
+    Otherwise, the number of remaining places for the competition is updated,
+    and the number of points remaining for the club is reduced.
+    A message is added to the user session and the home page is displayed."""
+    
     # Recovery of the chosen competition
     competition_name = request.form['competition']
     for competition in competitions:
