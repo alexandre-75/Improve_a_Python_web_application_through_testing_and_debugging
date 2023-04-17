@@ -41,14 +41,45 @@ def book(competition,club):
         return render_template('welcome.html', club=club, competitions=competitions)
 
 
-@app.route('/purchasePlaces',methods=['POST'])
+
+@app.route('/purchasePlaces', methods=['POST'])
 def purchasePlaces():
-    competition = [c for c in competitions if c['name'] == request.form['competition']][0]
-    club = [c for c in clubs if c['name'] == request.form['club']][0]
-    placesRequired = int(request.form['places'])
-    competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
-    flash('Great-booking complete!')
-    return render_template('welcome.html', club=club, competitions=competitions)
+    
+    # Recovery of the chosen competition
+    competition_name = request.form['competition']
+    for competition in competitions:
+        if competition['name'] == competition_name:
+            selected_competition = competition
+            break
+    
+    # Club recovery
+    club_name = request.form['club']
+    for club in clubs:
+        if club['name'] == club_name:
+            selected_club = club
+            break
+
+    places_required = int(request.form['places'])
+
+    if places_required > int(club['points']):
+
+            # Adding a notification message to the user session
+            flash('You don\'t have enough points.')
+            
+            # Home page display
+            return render_template('welcome.html', club=club, competition=competition)
+    else:
+        # Update of the number of remaining places for the competition
+        selected_competition['numberOfPlaces'] = int(selected_competition['numberOfPlaces']) - places_required 
+        
+        # Updating the number of points remaining for a club
+        club['points'] = int(club['points']) - places_required
+        
+        # Adding a notification message to the user session
+        flash('Great-booking complete!')
+        
+        # Home page display
+        return render_template('welcome.html', club=club, competitions=competitions)
 
 
 # TODO: Add route for points display
