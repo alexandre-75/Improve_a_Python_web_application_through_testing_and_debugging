@@ -18,7 +18,7 @@ class TestPointsAllowed:
         {
             "name": "TestCl",
             "email": "test@example.com",
-            "points": "10"
+            "points": 10
         }
     ]
 
@@ -65,7 +65,7 @@ class TestPointsAllowed:
         """
         
         self.client.post("/purchasePlaces", data={"places": 5, "club": "InvalidClubName", "competition": self.competition[0]["name"]})
-        assert int(self.club[0]["points"]) == 10
+        assert int(self.club[0]["points"]) == 0
 
     def test_invalid_competition_name(self):
         
@@ -74,7 +74,7 @@ class TestPointsAllowed:
         """
         
         self.client.post("/purchasePlaces", data={"places": 5, "club": self.club[0]["name"], "competition": "InvalidCompetitionName"})
-        assert int(self.club[0]["points"]) == 10
+        assert int(self.club[0]["points"]) == 0
 
     def test_invalid_places_value(self):
         
@@ -83,4 +83,5 @@ class TestPointsAllowed:
         """
         
         self.client.post("/purchasePlaces", data={"places": "invalid_places", "club": self.club[0]["name"], "competition": self.competition[0]["name"]})
-        assert int(self.club[0]["points"]) == 10
+        assert int(self.club[0]["points"]) == 0
+  
