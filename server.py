@@ -74,9 +74,10 @@ def purchasePlaces():
 
             # Adding a notification message to the user session
             flash('You don\'t have enough points.')
+            flash(f"You have that : {club['points']} Points available")
             
             # Home page display
-            return render_template('welcome.html', club=club, competition=competition)
+            return render_template('booking.html', club=club, competition=competition)
     else:
         # Update of the number of remaining places for the competition
         selected_competition['numberOfPlaces'] = int(selected_competition['numberOfPlaces']) - places_required 
