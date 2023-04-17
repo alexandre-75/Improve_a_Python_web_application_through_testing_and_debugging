@@ -85,7 +85,17 @@ def purchasePlaces():
             
             # Home page display
             return render_template('booking.html', club=club, competition=competition)
+    elif places_required > 12:
+        
+        # Adding a notification message to the user session
+        flash('You can\'t book more than 12 places in a competition.')
+        
+        # Home page display
+        return render_template('booking.html', club=club, competition=competition)
     else:
+        
+        update_booked_places(competition, club, places_required)
+        
         # Update of the number of remaining places for the competition
         selected_competition['numberOfPlaces'] = int(selected_competition['numberOfPlaces']) - places_required 
         
@@ -104,11 +114,19 @@ def booked_places(args_compétitions, args_clubs):
     for comp in args_compétitions:
         for club in args_clubs:
             places.append({'competition': comp['name'], 'booked': [0, club['name']]})
-
     return places
 
 places_booked = booked_places(competitions, clubs)
-print(places_booked)
+
+def update_booked_places(competition, club, places_required):
+    for item in places_booked:
+        if item['competition'] == competition['name']:
+            if item['booked'][1] == club['name'] and item['booked'][0] + places_required <= 12:
+                item['booked'][0] += places_required
+                break
+            else:
+                raise ValueError("You can't book more than 12 places in a competition.")
+            
 
 # TODO: Add route for points display
 
