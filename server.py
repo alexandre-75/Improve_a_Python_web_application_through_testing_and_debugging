@@ -1,5 +1,6 @@
 import json
 from flask import Flask,render_template,request,redirect,flash,url_for
+from datetime import datetime
 
 
 def loadClubs():
@@ -19,6 +20,22 @@ app.secret_key = 'something_special'
 
 competitions = loadCompetitions()
 clubs = loadClubs()
+
+def sort_competitions_date(comps):
+    past = []
+    present = []
+
+    for comp in comps:
+        if datetime.strptime(comp['date'], '%Y-%m-%d %H:%M:%S') < datetime.now():
+            past.append(comp)
+        elif datetime.strptime(comp['date'], '%Y-%m-%d %H:%M:%S') >= datetime.now():
+            present.append(comp)
+
+    return past, present
+
+past_competitions, present_competitions = sort_competitions_date(competitions)
+print(f"hello : {past_competitions}")
+print(f"hella : {present_competitions}")
 
 @app.route('/')
 def index():
