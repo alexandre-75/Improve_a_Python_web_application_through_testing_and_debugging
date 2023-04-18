@@ -24,18 +24,14 @@ clubs = loadClubs()
 def sort_competitions_date(comps):
     past = []
     present = []
-
     for comp in comps:
         if datetime.strptime(comp['date'], '%Y-%m-%d %H:%M:%S') < datetime.now():
             past.append(comp)
         elif datetime.strptime(comp['date'], '%Y-%m-%d %H:%M:%S') >= datetime.now():
             present.append(comp)
-
     return past, present
 
 past_competitions, present_competitions = sort_competitions_date(competitions)
-print(f"hello : {past_competitions}")
-print(f"hella : {present_competitions}")
 
 @app.route('/')
 def index():
@@ -45,24 +41,38 @@ def index():
 def showSummary():
     try:
         club = [club for club in clubs if club['email'] == request.form['email']][0]
-        return render_template('welcome.html', club=club, competitions=competitions)
+        return render_template('welcome.html', club=club, past_competitions=past_competitions, present_competitions=present_competitions)
     except IndexError:
         if request.form['email'] == '':
-            flash("Please enter your email.")
+            flash("Please enter your email.", 'error')
         else:
-            flash("No account related to this email.")
+            flash("No account related to this email.", 'error')
         return render_template('index.html'), 403
 
 
 @app.route('/book/<competition>/<club>')
 def book(competition,club):
-    foundClub = [c for c in clubs if c['name'] == club][0]
-    foundCompetition = [c for c in competitions if c['name'] == competition][0]
-    if foundClub and foundCompetition:
-        return render_template('booking.html',club=foundClub,competition=foundCompetition)
+
+    found_club = [c for c in clubs if c['name'] == club][0]
+    found_competition = [c for c in competitions if c['name'] == competition][0]
+    if found_club and found_competition:
+        if datetime.strptime(found_competition['date'], '%Y-%m-%d %H:%M:%S') < datetime.now():
+            flash("This competition is over.", 'error')
+            return render_template(
+                'welcome.html',
+                club=club,
+                past_competitions=past_competitions,
+                present_competitions=present_competitions
+            ), 403
+        return render_template('booking.html', club=found_club, competition=found_competition)
     else:
-        flash("Something went wrong-please try again")
-        return render_template('welcome.html', club=club, competitions=competitions)
+        flash("Something went wrong-please try again", 'error')
+        return render_template(
+            'welcome.html',
+            club=club,
+            past_competitions=past_competitions,
+            present_competitions=present_competitions
+        ), 403
 
 
 
