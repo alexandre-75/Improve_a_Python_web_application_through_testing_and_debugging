@@ -13,21 +13,26 @@ clubs = loadClubs()
 def index():
     return render_template('index.html')
 
-@app.route('/showSummary',methods=['POST'])
+@app.route('/showSummary', methods=['POST'])
 def showSummary():
-    try:
+    
+    list_club = []
+    for c in clubs:
+        list_club.append(c["email"])
+        
+    if request.form['email'] == '':
+        flash("Please enter your email.")
+        return render_template('index.html'), 403
+    elif request.form['email'] not in list_club:
+        flash("No account related to this email.")
+        return render_template('index.html'), 403
+    else:
         club_list = []
         for i in clubs:
             if i['email'] == request.form['email']:
                 club_list.append(i)
         email_club = list[0]
         return render_template('welcome.html', club=email_club, competitions=competitions)
-    except:
-        if request.form['email'] == '':
-            flash("Please enter your email.")
-        else:
-            flash("No account related to this email.")
-        return render_template('index.html'), 403
 
 
 @app.route('/book/<competition>/<club>')
