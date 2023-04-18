@@ -94,7 +94,10 @@ def purchasePlaces():
         return render_template('booking.html', club=club, competition=competition)
     else:
         
-        update_booked_places(competition, club, places_required)
+        update_booked_places(selected_competition, selected_club, places_required)
+        print(selected_club)
+        print("~~~~~~~~~~~~~~~~~~~")
+        print(selected_competition)
         
         # Update of the number of remaining places for the competition
         selected_competition['numberOfPlaces'] = int(selected_competition['numberOfPlaces']) - places_required 
@@ -117,15 +120,37 @@ def booked_places(args_compétitions, args_clubs):
     return places
 
 places_booked = booked_places(competitions, clubs)
+# print(places_booked)
+for i in places_booked:
+    # print (type(i["competition"]))
+    print (i)
+    # print (type(i["booked"][1]))
 
 def update_booked_places(competition, club, places_required):
     for item in places_booked:
         if item['competition'] == competition['name']:
-            if item['booked'][1] == club['name'] and item['booked'][0] + places_required <= 12:
-                item['booked'][0] += places_required
-                break
-            else:
-                raise ValueError("You can't book more than 12 places in a competition.")
+            print("ok")
+            print(item['competition'])
+            print(competition['name'])
+            print("toto")
+            print(club['name'])
+            print(item['booked'][1])
+            print(item['booked'][0])
+            
+            if item['booked'][1] == club:
+                print("ok2")
+                if item['booked'][0] + places_required <= 12:
+                    item['booked'][0] += places_required
+                    break
+            # else:
+            #     raise ValueError("You can't book more than 12 places in a competition.")
+
+# update_booked_places(competitions, clubs, 11)
+# print(type(competitions[0]['name']))
+# print(competitions[0]['name'])
+
+# print(clubs[0])
+
             
 
 # TODO: Add route for points display
