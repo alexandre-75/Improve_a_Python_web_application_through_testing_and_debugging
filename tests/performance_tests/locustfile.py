@@ -1,6 +1,6 @@
 from locust import HttpUser, task, between
-
-from server import load_clubs
+# import server
+# from server import load_clubs
 
 
 class LocustTestServer(HttpUser):
@@ -8,4 +8,8 @@ class LocustTestServer(HttpUser):
 
     def on_start(self):
         self.client.get("/")
-        self.client.post("/showSummary", data={'email': load_clubs()[0]["email"]})
+        # self.client.post("/showSummary", data={'email': load_clubs()[0]["email"]})
+
+    @task
+    def index(self):
+        self.client.get("/")
