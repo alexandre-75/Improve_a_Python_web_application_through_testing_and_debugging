@@ -31,12 +31,13 @@ def showSummary():
         for i in clubs:
             if i['email'] == request.form['email']:
                 club_list.append(i)
-        email_club = list[0]
+        email_club = club_list[0]
         return render_template('welcome.html', club=email_club, competitions=competitions)
 
 
 @app.route('/book/<competition>/<club>')
 def book(competition,club):
+    print("toto")
     foundClub = [c for c in clubs if c['name'] == club][0]
     foundCompetition = [c for c in competitions if c['name'] == competition][0]
     if foundClub and foundCompetition:
