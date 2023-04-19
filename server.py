@@ -143,6 +143,10 @@ def update_booked_places(competition, club, places_required):
 
 
 # TODO: Add route for points display
+@app.route('/points')
+def points():
+    a=1
+    return render_template('display_clubs_points.html', clubs=clubs)
 
 
 @app.route('/logout')
