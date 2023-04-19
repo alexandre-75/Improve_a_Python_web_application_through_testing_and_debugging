@@ -1,6 +1,6 @@
 import json
 from flask import Flask,render_template,request,redirect,flash,url_for
-from utils import loadClubs, loadCompetitions
+from utils import loadClubs, loadCompetitions, booked_places
 
 
 app = Flask(__name__)
@@ -8,6 +8,7 @@ app.secret_key = 'something_special'
 
 competitions = loadCompetitions()
 clubs = loadClubs()
+places_booked = booked_places(competitions, clubs)
 
 @app.route('/')
 def index():
@@ -109,20 +110,20 @@ def purchasePlaces():
         return render_template('welcome.html', club=club, competitions=competitions)
 
 
-def booked_places(args_compétitions, args_clubs):
-    places = []
-    for comp in args_compétitions:
-        for club in args_clubs:
-            places.append({'competition': comp['name'], 'booked': [0, club['name']]})
-    return places
-
-places_booked = booked_places(competitions, clubs)
 
 def update_booked_places(competition, club, places_required):
     for item in places_booked:
+        
+        #checks if the name of the competition of the item element is the same as that of the competition passed in competition parameter
         if item['competition'] == competition['name']:
+            
+            #the item element is the same as the name of the club passed as the club parameter
             if item['booked'][1] == club:
+                
+                # checks if the number of places reserved plus the number of places requested is <= 12
                 if item['booked'][0] + places_required <= 12:
+                    
+                    #updates the number of places reserved by adding the number of places requested
                     item['booked'][0] += places_required
                     break
                 else:
