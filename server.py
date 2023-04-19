@@ -44,7 +44,6 @@ def index():
 
 @app.route('/showSummary', methods=['POST'])
 def showSummary():
-<<<<<<< HEAD
     try:
         club = [club for club in clubs if club['email'] == request.form['email']][0]
         return render_template('welcome.html', club=club, past_competitions=past_competitions, present_competitions=present_competitions)
@@ -53,7 +52,6 @@ def showSummary():
             flash("Please enter your email.", 'error')
         else:
             flash("No account related to this email.", 'error')
-=======
     
     list_club = []
     for c in clubs:
@@ -61,7 +59,6 @@ def showSummary():
         
     if request.form['email'] == '':
         flash("Please enter your email.")
->>>>>>> master
         return render_template('index.html'), 403
     elif request.form['email'] not in list_club:
         flash("No account related to this email.")
