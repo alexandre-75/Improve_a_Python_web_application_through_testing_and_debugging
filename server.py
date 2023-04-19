@@ -37,6 +37,7 @@ def showSummary():
 
 @app.route('/book/<competition>/<club>')
 def book(competition,club):
+    print("toto")
     foundClub = [c for c in clubs if c['name'] == club][0]
     foundCompetition = [c for c in competitions if c['name'] == competition][0]
     if foundClub and foundCompetition:
@@ -82,7 +83,7 @@ def purchasePlaces():
             flash(f"You have that : {club['points']} Points available")
             
             # Home page display
-            return render_template('booking.html', club=club, competition=competition)
+            return render_template('booking.html', club=club, competition=competition), 400
     else:
         # Update of the number of remaining places for the competition
         selected_competition['numberOfPlaces'] = int(selected_competition['numberOfPlaces']) - places_required 
@@ -91,7 +92,7 @@ def purchasePlaces():
         club['points'] = int(club['points']) - places_required
         
         # Adding a notification message to the user session
-        flash('Great-booking complete!')
+        flash('booking complete')
         
         # Home page display
         return render_template('welcome.html', club=club, competitions=competitions)
