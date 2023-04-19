@@ -1,5 +1,6 @@
 import json
 from flask import Flask,render_template,request,redirect,flash,url_for
+<<<<<<< HEAD
 from datetime import datetime
 
 
@@ -13,6 +14,9 @@ def loadCompetitions():
     with open('competitions.json') as comps:
          listOfCompetitions = json.load(comps)['competitions']
          return listOfCompetitions
+=======
+from utils import loadClubs, loadCompetitions, booked_places
+>>>>>>> master
 
 
 app = Flask(__name__)
@@ -20,6 +24,7 @@ app.secret_key = 'something_special'
 
 competitions = loadCompetitions()
 clubs = loadClubs()
+places_booked = booked_places(competitions, clubs)
 
 def sort_competitions_date(comps):
     past = []
@@ -37,8 +42,9 @@ past_competitions, present_competitions = sort_competitions_date(competitions)
 def index():
     return render_template('index.html')
 
-@app.route('/showSummary',methods=['POST'])
+@app.route('/showSummary', methods=['POST'])
 def showSummary():
+<<<<<<< HEAD
     try:
         club = [club for club in clubs if club['email'] == request.form['email']][0]
         return render_template('welcome.html', club=club, past_competitions=past_competitions, present_competitions=present_competitions)
@@ -47,7 +53,26 @@ def showSummary():
             flash("Please enter your email.", 'error')
         else:
             flash("No account related to this email.", 'error')
+=======
+    
+    list_club = []
+    for c in clubs:
+        list_club.append(c["email"])
+        
+    if request.form['email'] == '':
+        flash("Please enter your email.")
+>>>>>>> master
         return render_template('index.html'), 403
+    elif request.form['email'] not in list_club:
+        flash("No account related to this email.")
+        return render_template('index.html'), 403
+    else:
+        club_list = []
+        for i in clubs:
+            if i['email'] == request.form['email']:
+                club_list.append(i)
+        email_club = club_list[0]
+        return render_template('welcome.html', club=email_club, competitions=competitions)
 
 
 @app.route('/book/<competition>/<club>')
@@ -65,6 +90,11 @@ def book(competition,club):
                 present_competitions=present_competitions
             ), 403
         return render_template('booking.html', club=found_club, competition=found_competition)
+    print("toto")
+    foundClub = [c for c in clubs if c['name'] == club][0]
+    foundCompetition = [c for c in competitions if c['name'] == competition][0]
+    if foundClub and foundCompetition:
+        return render_template('booking.html',club=foundClub,competition=foundCompetition)
     else:
         flash("Something went wrong-please try again", 'error')
         return render_template(
@@ -112,7 +142,18 @@ def purchasePlaces():
             
             # Home page display
             return render_template('booking.html', club=club, competition=competition)
+    elif places_required > 12:
+        
+        # Adding a notification message to the user session
+        flash('You can\'t book more than 12 places in a competition.')
+        
+        # Home page display
+        return render_template('booking.html', club=club, competition=competition)
+        return render_template('booking.html', club=club, competition=competition), 400
     else:
+        
+        update_booked_places(selected_competition, selected_club, places_required)
+        
         # Update of the number of remaining places for the competition
         selected_competition['numberOfPlaces'] = int(selected_competition['numberOfPlaces']) - places_required 
         
@@ -120,10 +161,30 @@ def purchasePlaces():
         club['points'] = int(club['points']) - places_required
         
         # Adding a notification message to the user session
-        flash('Great-booking complete!')
+        flash('booking complete')
         
         # Home page display
         return render_template('welcome.html', club=club, competitions=competitions)
+
+
+
+def update_booked_places(competition, club, places_required):
+    for item in places_booked:
+        
+        #checks if the name of the competition of the item element is the same as that of the competition passed in competition parameter
+        if item['competition'] == competition['name']:
+            
+            #the item element is the same as the name of the club passed as the club parameter
+            if item['booked'][1] == club:
+                
+                # checks if the number of places reserved plus the number of places requested is <= 12
+                if item['booked'][0] + places_required <= 12:
+                    
+                    #updates the number of places reserved by adding the number of places requested
+                    item['booked'][0] += places_required
+                    break
+                else:
+                    raise ValueError("You can't book more than 12 places in a competition.")
 
 
 # TODO: Add route for points display

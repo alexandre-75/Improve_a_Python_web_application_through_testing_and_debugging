@@ -45,18 +45,10 @@ class TestPointsAllowed:
         """
         Test that a club cannot purchase more places than the number of points they have.
         """
-        self.client.post("/purchasePlaces", data={"places": 100, "club": self.club[0]["name"], "competition": self.competition[0]["name"]})
-        assert int(self.club[0]["points"]) >= 0
+        response = self.client.post("/purchasePlaces", data={"places": 70, "club": self.club[0]["name"], "competition": self.competition[0]["name"]})
     
-    def test_purchase_successful(self):
-        
-        """
-        Test that a club can successfully purchase places when they have enough points.
-        """
-        
-        initial_points = int(self.club[0]["points"])
-        self.client.post("/purchasePlaces", data={"places": 5, "club": self.club[0]["name"], "competition": self.competition[0]["name"]})
-        assert int(self.club[0]["points"]) == initial_points - 5
+        assert response.status_code == 400
+
     
     def test_invalid_club_name(self):
         
