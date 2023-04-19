@@ -142,10 +142,8 @@ def update_booked_places(competition, club, places_required):
                     raise ValueError("You can't book more than 12 places in a competition.")
 
 
-# TODO: Add route for points display
 @app.route('/points')
 def points():
-    a=1
     return render_template('display_clubs_points.html', clubs=clubs)
 
 
