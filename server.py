@@ -1,6 +1,5 @@
 import json
 from flask import Flask,render_template,request,redirect,flash,url_for
-<<<<<<< HEAD
 from datetime import datetime
 
 
@@ -14,9 +13,7 @@ def loadCompetitions():
     with open('competitions.json') as comps:
          listOfCompetitions = json.load(comps)['competitions']
          return listOfCompetitions
-=======
 from utils import loadClubs, loadCompetitions, booked_places
->>>>>>> master
 
 
 app = Flask(__name__)
