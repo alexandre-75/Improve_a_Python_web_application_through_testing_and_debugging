@@ -31,7 +31,7 @@ def showSummary():
         for i in clubs:
             if i['email'] == request.form['email']:
                 club_list.append(i)
-        email_club = list[0]
+        email_club = club_list[0]
         return render_template('welcome.html', club=email_club, competitions=competitions)
 
 
