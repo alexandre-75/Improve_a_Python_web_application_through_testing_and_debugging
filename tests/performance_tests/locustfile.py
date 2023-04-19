@@ -1,15 +1,25 @@
 from locust import HttpUser, task, between
-# import server
-# from server import load_clubs
 
 
 class LocustTestServer(HttpUser):
+
     wait_time = between(1, 5)
 
     def on_start(self):
-        self.client.get("/")
-        # self.client.post("/showSummary", data={'email': load_clubs()[0]["email"]})
+        self.client.get("/", name="Index")
 
     @task
-    def index(self):
-        self.client.get("/")
+    def get_summary(self):
+        self.client.post("/showSummary", data={'email': "john@simplylift.co"},  name="Show_Summary")
+  
+    @task
+    def get_booking(self):
+        self.client.get("/book/FallClassic/Simply_Lift", name="book")
+
+    @task
+    def post_booking(self):
+        self.client.post("/purchasePlaces", data={"places": 0, "club": "Simply_Lift", "competition": "FallClassic"}, name="purchase_places")
+
+    @task
+    def get_board(self):
+        self.client.get("/points", name="points")
