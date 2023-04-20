@@ -97,7 +97,7 @@ def purchasePlaces():
             flash(f"You have that : {club['points']} Points available")
             
             # Home page display
-            return render_template('booking.html', club=club, competition=competition)
+            return render_template('booking.html', club=club, competition=competition), 400
     elif places_required > 12:
         
         # Adding a notification message to the user session
